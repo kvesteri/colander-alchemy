@@ -21,7 +21,11 @@ setup(
     zip_safe=False,
     include_package_data=True,
     platforms='any',
-    install_requires=['Flask'],
+    install_requires=[
+        'SQLAlchemy>=0.7',
+        'pytz>=2011j',
+        'colander>=0.9.8'
+    ],
     test_suite='tests.all_tests',
     #test_suite='test_colander_alchemy.suite',
     classifiers=[
