@@ -22,6 +22,7 @@ setup(
     include_package_data=True,
     platforms='any',
     install_requires=['Flask'],
+    test_suite='tests.all_tests',
     #test_suite='test_colander_alchemy.suite',
     classifiers=[
         'Environment :: Web Environment',
