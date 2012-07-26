@@ -7,7 +7,7 @@ from sqlalchemy.types import BigInteger
 from sqlalchemy.ext.declarative import declarative_base
 
 from colander_alchemy import (
-    ColanderMixin,
+    ColanderAlchemyMixin,
     NaiveDateTime,
     NullableSchemaNode,
     SchemaGenerator,
@@ -19,14 +19,14 @@ from colander_alchemy import (
 Base = declarative_base()
 
 
-class RelatedClassAA(Base, ColanderMixin):
+class RelatedClassAA(Base, ColanderAlchemyMixin):
     __tablename__ = 'another_related_class'
     id = sa.Column(BigInteger, autoincrement=True, primary_key=True)
     integer_field = sa.Column(sa.Integer)
     text_field = sa.Column(sa.Text)
 
 
-class RelatedClassA(Base, ColanderMixin):
+class RelatedClassA(Base, ColanderAlchemyMixin):
     __tablename__ = 'related_class_a'
     id = sa.Column(BigInteger, autoincrement=True, primary_key=True)
     integer_field = sa.Column(sa.Integer)
@@ -36,19 +36,19 @@ class RelatedClassA(Base, ColanderMixin):
     related = orm.relationship(RelatedClassAA)
 
 
-class RelatedClassB(Base, ColanderMixin):
+class RelatedClassB(Base, ColanderAlchemyMixin):
     __tablename__ = 'related_class_b'
     id = sa.Column(BigInteger, autoincrement=True, primary_key=True)
     text_field = sa.Column(sa.Text)
 
 
-class RelatedClassC(Base, ColanderMixin):
+class RelatedClassC(Base, ColanderAlchemyMixin):
     __tablename__ = 'related_class_c'
     id = sa.Column(BigInteger, autoincrement=True, primary_key=True)
     text_field = sa.Column(sa.Text)
 
 
-class ColanderSchemaTestModel(Base, ColanderMixin):
+class ColanderSchemaTestModel(Base, ColanderAlchemyMixin):
     __tablename__ = 'colander_schema_test'
 
     id = sa.Column(BigInteger, autoincrement=True, primary_key=True)

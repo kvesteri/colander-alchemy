@@ -69,7 +69,7 @@ class NaiveDateTime(colander.DateTime):
         return result
 
 
-class ColanderMixin(object):
+class ColanderAlchemyMixin(object):
     __schema__ = {}
 
     @classmethod
@@ -206,7 +206,8 @@ class SchemaGenerator(object):
         if name not in self.model_class.__schema__:
             return None
 
-        if not inspect.isclass(model) or not issubclass(model, ColanderMixin):
+        if not inspect.isclass(model) or \
+                not issubclass(model, ColanderAlchemyMixin):
             raise Exception('Could not create schema for %r' % model)
         else:
             if self.is_nullable(name):
@@ -324,4 +325,4 @@ class SchemaGenerator(object):
         raise UnknownTypeException(column_type)
 
 
-ColanderMixin.__schema_generator__ = SchemaGenerator
+ColanderAlchemyMixin.__schema_generator__ = SchemaGenerator
