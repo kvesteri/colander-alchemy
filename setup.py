@@ -5,8 +5,22 @@ colander-alchemy
 Generates colander schemas from SQLAlchemy models.
 """
 
-from setuptools import setup
+from setuptools import setup, Command
+import subprocess
 
+
+class PyTest(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        errno = subprocess.call(['py.test'])
+        raise SystemExit(errno)
 
 setup(
     name='colander-alchemy',
@@ -17,7 +31,7 @@ setup(
     author_email='konsta@fastmonkeys.com',
     description='Generates colander schemas from SQLAlchemy models.',
     long_description=__doc__,
-    py_modules=['colander_alchemy'],
+    packages=['colander_alchemy'],
     zip_safe=False,
     include_package_data=True,
     platforms='any',
@@ -26,7 +40,7 @@ setup(
         'pytz>=2011j',
         'colander>=0.9.8'
     ],
-    test_suite='tests.all_tests',
+    cmdclass={'test': PyTest},
     #test_suite='test_colander_alchemy.suite',
     classifiers=[
         'Environment :: Web Environment',
