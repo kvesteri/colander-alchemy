@@ -1,6 +1,9 @@
+from datetime import datetime
+
 import colander
 from pytest import raises
 from colander import Range, required, Length, OneOf, All, Email
+from colander.tests.test_colander import DummySchemaNode
 import sqlalchemy as sa
 from sqlalchemy import orm
 from sqlalchemy.types import BigInteger
@@ -99,6 +102,29 @@ class ColanderMixinTestCase(object):
             if node.name == field:
                 return node
         return None
+
+
+class TestNaiveDateTime(object):
+    def test_deserialize_naive_datetime(self):
+        type_ = NaiveDateTime()
+        node = DummySchemaNode(None)
+        result = type_.deserialize(node, '2011-07-28T17:18:00')
+        assert result == datetime(2011, 7, 28, 17, 18)
+        assert result.tzinfo is None
+
+    def test_deserialize_utc_datetime(self):
+        type_ = NaiveDateTime()
+        node = DummySchemaNode(None)
+        result = type_.deserialize(node, '2011-07-28T17:18:00Z')
+        assert result == datetime(2011, 7, 28, 17, 18)
+        assert result.tzinfo is None
+
+    def test_deserialize_offset_aware_datetime(self):
+        type_ = NaiveDateTime()
+        node = DummySchemaNode(None)
+        result = type_.deserialize(node, '2011-07-28T17:18:00+02:00')
+        assert result == datetime(2011, 7, 28, 15, 18)
+        assert result.tzinfo is None
 
 
 class TestSearchSchemaGeneration(ColanderMixinTestCase):
