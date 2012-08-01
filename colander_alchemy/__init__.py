@@ -6,17 +6,7 @@ from sqlalchemy import types
 from sqlalchemy.orm.properties import RelationshipProperty, ColumnProperty
 
 
-class _Missing(object):
-    __slots__ = ()
-
-    def __nonzero__(self):
-        return False
-
-    def __repr__(self):
-        return 'missing'
-
-
-missing = _Missing()
+missing = colander.null
 
 
 class StrippedString(colander.String):
@@ -301,6 +291,9 @@ class SchemaGenerator(object):
         )
 
     def length_validator(self, column):
+        """
+        Returns colander length validator for given column
+        """
         validator = self.validators(column.name)
         if hasattr(column.type, 'length'):
             length = colander.Length(max=column.type.length)
