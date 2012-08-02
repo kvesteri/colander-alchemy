@@ -92,12 +92,17 @@ class ColanderSchemaTestModel(Base, ColanderAlchemyMixin):
 
 
 class ColanderMixinTestCase(object):
-    def find_field(self, field, schema=None, missing=required,
+    def find_field(self,
+                   field,
+                   schema=None,
+                   missing=required,
+                   include=None,
                    assign_defaults=True):
         if not schema:
             schema = ColanderSchemaTestModel.schema(
                 missing=missing,
-                assign_defaults=assign_defaults
+                assign_defaults=assign_defaults,
+                include=include
             )
         for node in schema.children:
             if node.name == field:
@@ -149,6 +154,12 @@ class TestColanderSchemaMixin(ColanderMixinTestCase):
 
     def test_skips_foreign_keys_by_default(self):
         assert not self.find_field('foreign_key_field')
+
+    def test_can_include_foreign_keys(self):
+        assert self.find_field(
+            'foreign_key_field',
+            include=['foreign_key_field']
+        )
 
     def test_skips_readonly_fields(self):
         assert not self.find_field('read_only_field')

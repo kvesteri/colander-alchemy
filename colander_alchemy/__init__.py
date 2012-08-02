@@ -91,8 +91,12 @@ class ColanderAlchemyMixin(object):
         pass
 
     @classmethod
-    def schema(cls, include=None, exclude=None, name='',
-               missing=colander.required, assign_defaults=True):
+    def schema(cls,
+               include=None,
+               exclude=None,
+               name='',
+               missing=colander.required,
+               assign_defaults=True):
         generator = cls.__schema_generator__(cls, missing, assign_defaults)
         return generator.create(include, exclude, name)
 
@@ -180,10 +184,20 @@ class SchemaGenerator(object):
             missing=self.missing,
             validator=self.validator
         )
-        if not include:
-            fields = self.model_class._sa_class_manager.values()
-        else:
-            fields = [getattr(self.model_class, field) for field in include]
+
+        fields = set(self.model_class._sa_class_manager.values())
+        tmp = []
+        for field in fields:
+            column = field.property
+            if isinstance(column, ColumnProperty) and self.skip_column(column):
+                continue
+            tmp.append(field)
+        fields = set(tmp)
+
+        if include:
+            fields.update(set(
+                [getattr(self.model_class, field) for field in include]
+            ))
 
         if exclude:
             func = lambda a: a.key not in exclude
@@ -288,9 +302,6 @@ class SchemaGenerator(object):
     def column_schema_node(self, column_property):
         column = column_property.columns[0]
         name = column.name
-
-        if self.skip_column(column_property):
-            return None
 
         colander_type = self.convert_type(column.type)
         if column.default and self.assign_defaults:
