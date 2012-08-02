@@ -19,6 +19,30 @@ class StrippedString(colander.String):
         return value.strip()
 
 
+def remove_nulls(data):
+    """
+    Remove all colander.null values from given data dict
+
+    This function is smart enough to understand nested dicts
+
+    Examples::
+
+        >>> remove_nulls({'key1': colander.null, 'key2': 1})
+        {'key2': 1}
+        >>> remove_nulls({'a': {'b': colander.null}})
+        {'a': {}}
+    """
+    result = {}
+    for key, value in data.items():
+        if isinstance(value, dict):
+            result[key] = remove_nulls(value)
+        elif value is colander.null:
+            pass
+        else:
+            result[key] = value
+    return result
+
+
 def nullable(node):
     """
     This function should be used when declaring related nullable schemas.
@@ -272,7 +296,7 @@ class SchemaGenerator(object):
         if column.default and self.assign_defaults:
             default = column.default.arg
         else:
-            if self.is_nullable(name) or column.nullable:
+            if self.is_nullable(name) and column.nullable:
                 default = missing
             else:
                 default = self.missing

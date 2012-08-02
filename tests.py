@@ -2,7 +2,7 @@ from datetime import datetime
 
 import colander
 from pytest import raises
-from colander import Range, required, Length, OneOf, All, Email
+from colander import Range, required, Length, OneOf, All, Email, null
 from colander.tests.test_colander import DummySchemaNode
 import sqlalchemy as sa
 from sqlalchemy import orm
@@ -15,7 +15,8 @@ from colander_alchemy import (
     NullableSchemaNode,
     SchemaGenerator,
     UnknownTypeException,
-    missing
+    missing,
+    remove_nulls
 )
 
 
@@ -102,6 +103,11 @@ class ColanderMixinTestCase(object):
             if node.name == field:
                 return node
         return None
+
+
+class TestRemoveNulls(object):
+    def test_removes_all_keys_with_nulls(self):
+        assert remove_nulls({'a': null}) == {}
 
 
 class TestNaiveDateTime(object):
