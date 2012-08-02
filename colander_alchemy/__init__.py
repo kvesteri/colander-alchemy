@@ -200,7 +200,10 @@ class SchemaGenerator(object):
                 not issubclass(model, ColanderAlchemyMixin):
             raise Exception('Could not create schema for %r' % model)
         else:
-            default = self.missing
+            if self.is_nullable(name):
+                default = missing
+            else:
+                default = self.missing
             kwargs = {
                 'name': name,
                 'missing': default,
@@ -269,7 +272,7 @@ class SchemaGenerator(object):
         if column.default and self.assign_defaults:
             default = column.default.arg
         else:
-            if self.is_nullable(name) and column.nullable:
+            if self.is_nullable(name) or column.nullable:
                 default = missing
             else:
                 default = self.missing
